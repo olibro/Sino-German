@@ -3,6 +3,7 @@
 #include <iostream>
 #include <wiringPi.h>
 #include <softPwm.h>
+#include "steuerung.h"
 
 using namespace std;
 
@@ -14,7 +15,7 @@ using namespace std;
 #define RM_VOR	22	// wiringPin 3
 #define RM_ZUR	23	// wiringPin 4
 
-void init(void){
+void init_motorsteuerung(void){
 	if(wiringPiSetupGpio()==-1){
 		cout << "Initalisation failed.\n";
 	}
@@ -38,22 +39,40 @@ void init(void){
 	}
 }
 
-void rm_vor(int pwr){
-	
-	
+//Funktion um rechten Motor nach vorne zu bewegen. Es wird die Leistung/Geschwindigkeit
+//in Prozent(0..100%) mitgegeben, sowie die Zeitdauer(in Millisekunden,1s=1000ms) wie lange der Motor an sein soll.
+void rm_vor(int pwr, int time){
+	delay(50);					//Kurze Umschaltzeit
+	softPwmWrite(RM_VOR,pwr);	//Erstellt eine PWM(Pulsweitenmodulation) fuer PIN=RM_VOR und Wert=pwr
+	delay(time);				//Motor bleibt time ms an
+	delay(50);					//Kurze Umschaltzeit
+	softPwmWrite(RM_VOR,0);		//Motor ist wieder aus.
+	digitalWrite(RM_VOR,0);
 }
 
-int main(void){
-	int pwr_lm=0;	//Power linker Motor(0..100)
-	int pwr_rm=0;	//Power rechter Motor(0..100)
-	init();
-	while(pwr_lm<100){
-		softPwmWrite(VOR,pwr_lm);
-		pwr_lm+=5;
-		cout << "pwr " << pwr_lm << endl;
-		delay(1000);
-	}
-	digitalWrite(VOR,0);
-	digitalWrite(VOR,0);
-	return 0;
+void rm_zur(int pwr, int time){
+	delay(50);	//Kurze Umschaltzeit
+	softPwmWrite(RM_ZUR,pwr);	//Erstellt eine PWM(Pulsweitenmodulation) fuer PIN=RM_ZUR und Wert=pwr
+	delay(time);				//Motor bleibt time ms an
+	delay(50);					//Kurze Umschaltzeit
+	softPwmWrite(RM_ZUR,0);		//Motor ist wieder aus.
+	digitalWrite(RM_ZUR,0);
 }
+
+void lm_vor(int pwr, int time){
+	delay(50);					//Kurze Umschaltzeit
+	softPwmWrite(LM_VOR,pwr);	//Erstellt eine PWM(Pulsweitenmodulation) fuer PIN=LM_VOR und Wert=pwr
+	delay(time);				//Motor bleibt time ms an
+	delay(50);					//Kurze Umschaltzeit
+	softPwmWrite(LM_VOR,0);		//Motor ist wieder aus.
+	digitalWrite(LM_VOR,0);
+}
+
+void lm_zur(int pwr, int time){
+	delay(50);	//Kurze Umschaltzeit
+	softPwmWrite(LM_ZUR,pwr);	//Erstellt eine PWM(Pulsweitenmodulation) fuer PIN=LM_ZUR und Wert=pwr
+	delay(time);				//Motor bleibt time ms an
+	delay(50);					//Kurze Umschaltzeit
+	softPwmWrite(LM_ZUR,0);		//Motor ist wieder aus.
+	digitalWrite(LM_ZUR,0);
+

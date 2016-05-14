@@ -4,10 +4,12 @@
 
 using namespace std;
 
-int main(void){
+int main(void)
+{
     setup();
-    while(true){
-            cout <<  "Entfernung: " << getDistance() << " cm" << endl;
+    while(true)
+    {
+        cout <<  "Entfernung: " << getDistance() << " cm" << endl;
     }
     return 0;
 }

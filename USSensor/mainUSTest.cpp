@@ -1,3 +1,5 @@
+//Compile: g++ mainUSTest.cpp USSensor.cpp -o USSTest -lwiringPi
+
 #include <wiringPi.h>
 #include <iostream>
 #include "USSensor.h"

@@ -12,6 +12,8 @@ int main(void)
     while(true)
     {
         cout <<  "Entfernung: " << getDistance() << " cm" << endl;
+        // Warte 1 Sekunde (1000ms = 1 s)
+        delay(1000);
     }
     return 0;
 }

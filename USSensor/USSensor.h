@@ -1,7 +1,7 @@
 #ifndef USSENSOR_H
 #define USSENSOR_H
 
-public void setup();
-public int getDistance();
+void setup();
+int getDistance();
 
 #endif

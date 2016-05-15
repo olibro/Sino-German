@@ -1,3 +1,5 @@
+//Compile: g++ mainUSTest.cpp USSensor.cpp -o USSTest -lwiringPi
+
 #include <wiringPi.h>
 #include <iostream>
 
@@ -11,7 +13,7 @@ void setup()
 {
     wiringPiSetup();
     pinMode(TRIG, OUTPUT);
-    pinMode(ECHO, INPUT)
+    pinMode(ECHO, INPUT);
 
     //TRIG pin must start LOW
     digitalWrite(TRIG, LOW);

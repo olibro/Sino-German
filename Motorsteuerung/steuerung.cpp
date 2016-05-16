@@ -15,28 +15,34 @@ using namespace std;
 #define RM_VOR	22	// wiringPin 3
 #define RM_ZUR	23	// wiringPin 4
 
-void init_motorsteuerung(void){
-	if(wiringPiSetupGpio()==-1){
-		cout << "Initalisation failed.\n";
-	}
-	pinMode(LM_VOR,OUTPUT);
-	pinMode(LM_ZUR,OUTPUT);
-	pinMode(RM_VOR,OUTPUT);
-	pinMode(RM_ZUR,OUTPUT);
-	
-	//Wenn Initalisierung fehlgeschlagen ist, soll eine Fehlermeldung erfolgen.
-	if(softPwmCreate(LM_VOR,0,100)!=0){ //initValue=0 (Motor aus), PWMrange 0..100 (in Prozent)
-		cout << "Initalisation failed.\n";
-	}
-	if(softPwmCreate(LM_ZUR,0,100)!=0){
-		cout << "Initalisation failed.\n";
-	}
-	if(softPwmCreate(RM_VOR,0,100)!=0){ //initValue=0 (Motor aus), PWMrange 0..100 (in Prozent)
-		cout << "Initalisation failed.\n";
-	}
-	if(softPwmCreate(RM_ZUR,0,100)!=0){
-		cout << "Initalisation failed.\n";
-	}
+void init_motorsteuerung(void)
+{
+    if(wiringPiSetupGpio()==-1)
+    {
+        cout << "Initalisation failed.\n";
+    }
+    pinMode(LM_VOR,OUTPUT);
+    pinMode(LM_ZUR,OUTPUT);
+    pinMode(RM_VOR,OUTPUT);
+    pinMode(RM_ZUR,OUTPUT);
+
+    //Wenn Initalisierung fehlgeschlagen ist, soll eine Fehlermeldung erfolgen.
+    if(softPwmCreate(LM_VOR,0,100)!=0)  //initValue=0 (Motor aus), PWMrange 0..100 (in Prozent)
+    {
+        cout << "Initalisation failed.\n";
+    }
+    if(softPwmCreate(LM_ZUR,0,100)!=0)
+    {
+        cout << "Initalisation failed.\n";
+    }
+    if(softPwmCreate(RM_VOR,0,100)!=0)  //initValue=0 (Motor aus), PWMrange 0..100 (in Prozent)
+    {
+        cout << "Initalisation failed.\n";
+    }
+    if(softPwmCreate(RM_ZUR,0,100)!=0)
+    {
+        cout << "Initalisation failed.\n";
+    }
 }
 
 //Funktion um rechten Motor nach vorne zu bewegen. Es wird die Leistung/Geschwindigkeit
@@ -119,4 +125,3 @@ void lm_zur(int pwr, int time){
 			digitalWrite(LM_ZUR,0);		//Bei mir hat der Motor ohne diese Zeile nicht aufgehört zu drehen???
 		}
 	}
-

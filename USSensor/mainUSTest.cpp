@@ -8,6 +8,10 @@ using namespace std;
 
 int main(void)
 {
+    if(wiringPiSetup()==-1)
+    {
+        cout << "Initalisation failed.\n";
+    }
     setup();
     while(true)
     {

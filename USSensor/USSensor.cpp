@@ -9,9 +9,8 @@ using namespace std;
 #define ECHO 0
 
 //Pin zuweisung
-void setup()
+void init_USSensor()
 {
-    wiringPiSetup();
     pinMode(TRIG, OUTPUT);
     pinMode(ECHO, INPUT);
 

@@ -1,3 +1,5 @@
+//Compile: g++ -Wall -pedantic main.cpp steuerung.cpp -o steuerung -lwiringPi -lpthread
+
 #include <iostream>
 #include <wiringPi.h>
 #include <softPwm.h>
@@ -8,7 +10,7 @@
 using namespace std;
 
 int main(void){
-	init_motorsteuerung(); //Init 
+	init_motorsteuerung(); //Init
 	setup(); //INit USS
 	while(getDistance()<=10cm){
 		rm_vor(100,0);

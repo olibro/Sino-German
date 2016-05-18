@@ -1,4 +1,4 @@
-//Compile: g++ -Wall -pedantic steuerung.cpp -o steuerung -lwiringPi -lpthread
+//Compile: g++ -Wall -pedantic main.cpp steuerung.cpp -o steuerung -lwiringPi -lpthread
 
 #include <iostream>
 #include <wiringPi.h>

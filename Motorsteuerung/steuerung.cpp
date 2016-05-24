@@ -10,10 +10,10 @@ using namespace std;
 // Benutze Pinkonfiguration von CPU, wiringPiSetupGpio()
 // VOR==Vorwaertsfahren, ZUR==Rueckwaertsfahren
 // LM==Linker Motor, RM==Rechter Motor
-#define LM_VOR	4	// wiringPin 0
-#define	LM_ZUR	5	// wiringPin 1
-#define RM_VOR	6	// wiringPin 3
-#define RM_ZUR	1	// wiringPin 4
+#define LM_VOR	21
+#define	LM_ZUR	22
+#define RM_VOR	23
+#define RM_ZUR	24
 
 void init_motorsteuerung(void)
 {

@@ -12,7 +12,7 @@ int main(void)
     {
         cout << "Initalisation failed.\n";
     }
-    setup();
+    init_USSensor();
     while(true)
     {
         cout <<  "Entfernung: " << getDistance() << " cm" << endl;

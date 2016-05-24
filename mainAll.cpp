@@ -3,10 +3,10 @@
 /*
 Zum Testen haben wir die Motoren auf die folgende wiringPi Pins angeschlossen
 
-#define LM_VOR	4
-#define	LM_ZUR	5
-#define RM_VOR	6
-#define RM_ZUR	1
+#define LM_VOR	21
+#define	LM_ZUR	22
+#define RM_VOR	23
+#define RM_ZUR	24
 
 und die Ultraschallsensor
 

@@ -144,33 +144,6 @@ void steurung(int pwrRM, int pwrLM, int time)
     if(time != 0)
     {
         delay(50);
-
-        if(pwrRM > 0)
-            softPwmWrite(RM_VOR, pwrRM);
-        else if(pwrRM == 0)
-        {
-            softPwmWrite(RM_VOR, 0);
-            digitalWrite(RM_VOR,0);
-            softPwmWrite(RM_ZUR, 0);
-            digitalWrite(RM_ZUR,0);
-        }
-        else
-            softPwmWrite(RM_ZUR, -pwrRM);
-        if(pwrLM > 0)
-            softPwmWrite(LM_VOR, pwrLM);
-        else if(pwrLM == 0)
-        {
-            softPwmWrite(LM_VOR, 0);
-            digitalWrite(LM_VOR,0);
-            softPwmWrite(LM_ZUR, 0);
-            digitalWrite(LM_ZUR,0);
-        }
-        else
-            softPwmWrite(LM_ZUR, -pwrLM);
-    }
-    else  // (time == 0)
-    {
-        delay(50);
         // Rechter Motor
         if(pwrRM > 0)
         {
@@ -187,10 +160,12 @@ void steurung(int pwrRM, int pwrLM, int time)
             digitalWrite(RM_ZUR,0);
         }
         else
+        {
             softPwmWrite(RM_ZUR, -pwrRM);
-        delay(time);
-        softPwmWrite(RM_ZUR, 0);
-        digitalWrite(RM_ZUR,0);
+            delay(time);
+            softPwmWrite(RM_ZUR, 0);
+            digitalWrite(RM_ZUR,0);
+        }
 
         // Linker Motor
         if(pwrLM > 0)
@@ -216,5 +191,37 @@ void steurung(int pwrRM, int pwrLM, int time)
         }
 
     }
+    else  // (time == 0)
+    {
+        delay(50);
+
+        if(pwrRM > 0)
+            softPwmWrite(RM_VOR, pwrRM);
+        else if(pwrRM == 0)
+        {
+            softPwmWrite(RM_VOR, 0);
+            digitalWrite(RM_VOR,0);
+            softPwmWrite(RM_ZUR, 0);
+            digitalWrite(RM_ZUR,0);
+        }
+        else
+            softPwmWrite(RM_ZUR, -pwrRM);
+
+        if(pwrLM > 0)
+            softPwmWrite(LM_VOR, pwrLM);
+        else if(pwrLM == 0)
+        {
+            softPwmWrite(LM_VOR, 0);
+            digitalWrite(LM_VOR,0);
+            softPwmWrite(LM_ZUR, 0);
+            digitalWrite(LM_ZUR,0);
+        }
+        else
+            softPwmWrite(LM_ZUR, -pwrLM);
+    }
+
 
 }
+
+
+

@@ -11,9 +11,9 @@ using namespace std;
 // VOR==Vorwaertsfahren, ZUR==Rueckwaertsfahren
 // LM==Linker Motor, RM==Rechter Motor
 #define LM_VOR	21	// wiringPin 0
-#define	LM_ZUR	22	
-#define RM_VOR	23	
-#define RM_ZUR	24	
+#define	LM_ZUR	22
+#define RM_VOR	23
+#define RM_ZUR	24
 
 void init_motorsteuerung(void)
 {
@@ -137,4 +137,84 @@ void lm_zur(int pwr, int time)
             digitalWrite(LM_ZUR,0);		//Bei mir hat der Motor ohne diese Zeile nicht aufgehört zu drehen???
         }
     }
+}
+
+void steurung(int pwrRM, int pwrLM, int time)
+{
+    if(time != 0)
+    {
+        delay(50);
+
+        if(pwrRM > 0)
+            softPwmWrite(RM_VOR, pwrRM);
+        else if(pwrRM == 0)
+        {
+            softPwmWrite(RM_VOR, 0);
+            digitalWrite(RM_VOR,0);
+            softPwmWrite(RM_ZUR, 0);
+            digitalWrite(RM_ZUR,0);
+        }
+        else
+            softPwmWrite(RM_ZUR, -pwrRM);
+        if(pwrLM > 0)
+            softPwmWrite(LM_VOR, pwrLM);
+        else if(pwrLM == 0)
+        {
+            softPwmWrite(LM_VOR, 0);
+            digitalWrite(LM_VOR,0);
+            softPwmWrite(LM_ZUR, 0);
+            digitalWrite(LM_ZUR,0);
+        }
+        else
+            softPwmWrite(LM_ZUR, -pwrLM);
+    }
+    else  // (time == 0)
+    {
+        delay(50);
+        // Rechter Motor
+        if(pwrRM > 0)
+        {
+            softPwmWrite(RM_VOR, pwrRM);
+            delay(time);
+            softPwmWrite(RM_VOR, 0);
+            digitalWrite(RM_VOR,0);
+        }
+        else if(pwrRM == 0)
+        {
+            softPwmWrite(RM_VOR, 0);
+            softPwmWrite(RM_ZUR, 0);
+            digitalWrite(RM_VOR,0);
+            digitalWrite(RM_ZUR,0);
+        }
+        else
+            softPwmWrite(RM_ZUR, -pwrRM);
+        delay(time);
+        softPwmWrite(RM_ZUR, 0);
+        digitalWrite(RM_ZUR,0);
+
+        // Linker Motor
+        if(pwrLM > 0)
+        {
+            softPwmWrite(LM_VOR, pwrLM);
+            delay(time);
+            softPwmWrite(LM_VOR, 0);
+            digitalWrite(LM_VOR,0);
+        }
+        else if(pwrLM == 0)
+        {
+            softPwmWrite(LM_VOR, 0);
+            digitalWrite(LM_VOR,0);
+            softPwmWrite(LM_ZUR, 0);
+            digitalWrite(LM_ZUR,0);
+        }
+        else
+        {
+            softPwmWrite(LM_ZUR, -pwrLM);
+            delay(time);
+            softPwmWrite(LM_ZUR, 0);
+            digitalWrite(LM_ZUR,0);
+        }
+
+    }
+
 }

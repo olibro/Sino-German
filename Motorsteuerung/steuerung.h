@@ -10,11 +10,12 @@
 	//Manueller Modus: pwr=0..100, time=An-Zeit in ms, danach wieder aus.
 	//Automatischer Modus: time==0, Motor immer an bis pwr==0
 	void init_motorsteuerung(void);	//initialisiert Pins
-	void rm_vor(int pwr, int time); 
-	void rm_zur(int pwr, int time);	
+	void rm_vor(int pwr, int time);
+	void rm_zur(int pwr, int time);
 	void lm_vor(int pwr, int time);
 	void lm_zur(int pwr, int time);
+	void steurung(int pwrRM, int pwrLM, int time);
 
 	//Hier fehlen noch die Prototypen fuer die anderen Motoren
-	
+
 #endif

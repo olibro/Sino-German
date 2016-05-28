@@ -13,13 +13,11 @@ int main(void){
         cout << "Initalisation failed.\n";
     }
 	init_motorsteuerung();
-	cout << "Vor\n";
-	rm_vor(100,500);
-    lm_vor(100,0);
-    delay(5000);
-    lm_vor(0,0);
-	cout << "Zur";
-	rm_zur(30,500);
-    lm_zur(30,5000);
+	cout << "RV und LZ\n";
+	//steurung(int pwrRM, int pwrLM, int time);
+    steurung(0, 0, 2000);
+    cout << "RZ und LV\n";
+	//steurung(int pwrRM, int pwrLM, int time);
+    steurung(0, 0, 2000);
 	return 0;
 }

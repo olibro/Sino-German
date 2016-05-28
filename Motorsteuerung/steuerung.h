@@ -10,11 +10,20 @@
 	//Manueller Modus: pwr=0..100, time=An-Zeit in ms, danach wieder aus.
 	//Automatischer Modus: time==0, Motor immer an bis pwr==0
 	void init_motorsteuerung(void);	//initialisiert Pins
-	void rm_vor(int pwr, int time); 
-	void rm_zur(int pwr, int time);	
-	void lm_vor(int pwr, int time);
-	void lm_zur(int pwr, int time);
-
-	//Hier fehlen noch die Prototypen fuer die anderen Motoren
 	
+	//Es wird die Leistung/Geschwindigkeit in Prozent(0..100%) mitgegeben
+
+
+	//Manueller Modus: Zeitdauer(in Millisekunden,1s=1000ms) wie lange der Motor an sein soll wird angegeben.
+	//Automatischer Modus: Zeitvariable muss 0 sein.
+
+
+	//int pwrRM: 	größer als Null -> fährt vorwärts
+	//				kleiner als Null -> fährt rückwärts
+	//int pwrLM: 	größer als Null -> fährt vorwärts
+	//				kleiner als Null -> fährt rückwärts
+	//int time: 	wenn Zeit ungleich Null, dann fahren beide Motoren so lange Zeitangabe war.
+	//				ist Zeit gleich Null fahren die Motoren solange bis ein anderes Kommando kommt.
+	void steuerung(int pwrRM, int pwrLM, int time);
+
 #endif

@@ -1,9 +1,25 @@
+
 //Compile: g++ -Wall -pedantic main.cpp steuerung.cpp -o steuerung -lwiringPi -lpthread
+
+/*
+	Zum Testen haben wir die Motoren an die folgende wiringPi Pins angeschlossen
+	LM_VOR	21
+	LM_ZUR	22
+	RM_VOR	23
+	RM_ZUR	24
+	
+	Ultraschallsensor
+	TRIG 7
+	ECHO 0
+*/
 
 #include <iostream>
 #include <wiringPi.h>
 #include <softPwm.h>
-#include "steuerung.h"
+
+//Pfad muss an lokale Verzeichnisstruktur angepasst werden.
+#include "./USSensor/USSensor.h"
+#include "./Motorsteuerung/steuerung.h"
 
 using namespace std;
 
@@ -13,13 +29,19 @@ int main(void){
         cout << "Initalisation failed.\n";
     }
 	init_motorsteuerung();
-	cout << "Vor\n";
-	rm_vor(100,500);
-    lm_vor(100,0);
-    delay(5000);
-    lm_vor(0,0);
-	cout << "Zur";
-	rm_zur(30,500);
-    lm_zur(30,5000);
+	init_USSensor();
+	
+	//steuerung(int pwrRM, int pwrLM, int time);
+    while(1){
+		delay(100);		//Umschaltzeit. Zum Bremsen des Motors
+		while(getDistance()>=20){
+			steuerung(50, 50, 0);
+		}
+		delay(100);
+		while(getDistance()<20){
+			steuerung(-50,-50,0);
+		}
+		steuerung(0, 0, 0);
+	}	
 	return 0;
 }

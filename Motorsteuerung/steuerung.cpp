@@ -7,13 +7,15 @@
 
 using namespace std;
 
-// Benutze Pinkonfiguration von CPU, wiringPiSetupGpio()
+// Benutze Pinkonfiguration von wiringPi, wiringPiSetup()
 // VOR==Vorwaertsfahren, ZUR==Rueckwaertsfahren
 // LM==Linker Motor, RM==Rechter Motor
-#define LM_VOR	21	// wiringPin 0
-#define	LM_ZUR	22	
-#define RM_VOR	23	
-#define RM_ZUR	24	
+
+// 			wiringPiPin		Physicalpin
+#define LM_VOR	21	// 			29
+#define	LM_ZUR	22	//			31
+#define RM_VOR	23	//			33
+#define RM_ZUR	24	//			35
 
 void init_motorsteuerung(void)
 {
@@ -41,100 +43,127 @@ void init_motorsteuerung(void)
     }
 }
 
-//Funktion um rechten Motor nach vorne zu bewegen. Es wird die Leistung/Geschwindigkeit
-//in Prozent(0..100%) mitgegeben
+//Es wird die Leistung/Geschwindigkeit in Prozent(0..100%) mitgegeben
+
 
 //Manueller Modus: Zeitdauer(in Millisekunden,1s=1000ms) wie lange der Motor an sein soll wird angegeben.
 //Automatischer Modus: Zeitvariable muss 0 sein.
 
-void rm_vor(int pwr, int time)
+
+//int pwrRM: 	größer als Null -> fährt vorwärts
+//				kleiner als Null -> fährt rückwärts
+//int pwrLM: 	größer als Null -> fährt vorwärts
+//				kleiner als Null -> fährt rückwärts
+//int time: 	wenn Zeit ungleich Null, dann fahren beide Motoren so lange Zeitangabe war.
+//				ist Zeit gleich Null fahren die Motoren solange bis ein anderes Kommando kommt.
+
+
+void steuerung(int pwrRM, int pwrLM, int time)
 {
-    if(time!=0) 	//zur Manuellen Steuerung
+    if(time != 0)
     {
-        delay(50);					//Kurze Umschaltzeit
-        softPwmWrite(RM_VOR,pwr);	//Erstellt eine PWM(Pulsweitenmodulation) fuer PIN=RM_VOR und Wert=pwr
-        delay(time);				//Motor bleibt time ms an
-        delay(50);					//Kurze Umschaltzeit
-        softPwmWrite(RM_VOR,0);		//Motor ist wieder aus.
+        delay(50);
+        // Rechter Motor
+        if(pwrRM > 0)
+        {
+			//cout << "RM VOR\n";
+            softPwmWrite(RM_VOR, pwrRM);
+            //delay(time);	FEHLER DA HIER PROGRAMM ANGEHALTEN WIRD FUER DELAY(TIME)
+            //softPwmWrite(RM_VOR, 0);
+            //digitalWrite(RM_VOR,0);
+        }
+        else if(pwrRM == 0)
+        {
+			//cout << "RM STOP\n";
+            softPwmWrite(RM_VOR, 0);
+            softPwmWrite(RM_ZUR, 0);
+            digitalWrite(RM_VOR,0);
+            digitalWrite(RM_ZUR,0);
+        }
+        else
+        {
+			//cout << "RM ZUR\n";
+            softPwmWrite(RM_ZUR, -pwrRM);
+            //delay(time);
+            //softPwmWrite(RM_ZUR, 0);
+            //digitalWrite(RM_ZUR,0);
+        }
+
+        // Linker Motor
+        if(pwrLM > 0)
+        {
+			//cout << "LM VOR\n";
+            softPwmWrite(LM_VOR, pwrLM);
+            //delay(time);
+            //softPwmWrite(LM_VOR, 0);
+            //digitalWrite(LM_VOR,0);
+        }
+        else if(pwrLM == 0)
+        {
+			//cout << "LM STOP\n";
+            softPwmWrite(LM_VOR, 0);
+            digitalWrite(LM_VOR,0);
+            softPwmWrite(LM_ZUR, 0);
+            digitalWrite(LM_ZUR,0);
+        }
+        else
+        {
+			//cout << "LM ZUR\n";
+            softPwmWrite(LM_ZUR, -pwrLM);
+            //delay(time);
+            //softPwmWrite(LM_ZUR, 0);
+            //digitalWrite(LM_ZUR,0);
+        }
+		//Nachdem der Motor an war soll er nach ablauf der Zeit wieder ausgehen.
+		delay(time);
+		softPwmWrite(RM_VOR, 0);
         digitalWrite(RM_VOR,0);
-    }
-    else 		//automatische Steuerung durch Sensorwerte
-    {
-        delay(50);					//Kurze Umschaltzeit
-        softPwmWrite(RM_VOR,pwr);	//Erstellt eine PWM(Pulsweitenmodulation) fuer PIN=RM_VOR und Wert=pwr
-        if(pwr==0)
-        {
-            delay(50);					//Kurze Umschaltzeit
-            digitalWrite(RM_VOR,0);		//Bei mir hat der Motor ohne diese Zeile nicht aufgehört zu drehen???
-        }
-    }
-}
-
-void rm_zur(int pwr, int time)
-{
-    if(time!=0) 	//zur Manuellen Steuerung
-    {
-        delay(50);					//Kurze Umschaltzeit
-        softPwmWrite(RM_ZUR,pwr);	//Erstellt eine PWM(Pulsweitenmodulation) fuer PIN=RM_ZUR und Wert=pwr
-        delay(time);				//Motor bleibt time ms an
-        delay(50);					//Kurze Umschaltzeit
-        softPwmWrite(RM_ZUR,0);		//Motor ist wieder aus.
+		softPwmWrite(RM_ZUR, 0);
         digitalWrite(RM_ZUR,0);
-    }
-    else 		//automatische Steuerung durch Sensorwerte
-    {
-        delay(50);					//Kurze Umschaltzeit
-        softPwmWrite(RM_ZUR,pwr);	//Erstellt eine PWM(Pulsweitenmodulation) fuer PIN=RM_ZUR und Wert=pwr
-        if(pwr==0)
-        {
-            delay(50);					//Kurze Umschaltzeit
-            digitalWrite(RM_ZUR,0);		//Bei mir hat der Motor ohne diese Zeile nicht aufgehört zu drehen???
-        }
-    }
-}
-
-void lm_vor(int pwr, int time)
-{
-    if(time!=0) 	//zur Manuellen Steuerung
-    {
-        delay(50);					//Kurze Umschaltzeit
-        softPwmWrite(LM_VOR,pwr);	//Erstellt eine PWM(Pulsweitenmodulation) fuer PIN=LM_VOR und Wert=pwr
-        delay(time);				//Motor bleibt time ms an
-        delay(50);					//Kurze Umschaltzeit
-        softPwmWrite(LM_VOR,0);		//Motor ist wieder aus.
+		softPwmWrite(LM_VOR, 0);
         digitalWrite(LM_VOR,0);
+		softPwmWrite(LM_ZUR, 0);
+        digitalWrite(LM_ZUR,0);
+		
+
     }
-    else 		//automatische Steuerung durch Sensorwerte
+    else  // (time == 0)
     {
-        delay(50);					//Kurze Umschaltzeit
-        softPwmWrite(LM_VOR,pwr);	//Erstellt eine PWM(Pulsweitenmodulation) fuer PIN=LM_VOR und Wert=pwr
-        if(pwr==0)
+        delay(50);
+
+        if(pwrRM > 0){
+			//cout << "RM VOR\n";
+            softPwmWrite(RM_VOR, pwrRM);
+		}
+        else if(pwrRM == 0)
         {
-            delay(50);					//Kurze Umschaltzeit
-            digitalWrite(LM_VOR,0);		//Bei mir hat der Motor ohne diese Zeile nicht aufgehört zu drehen???
+			//cout << "RM STOP\n";
+            softPwmWrite(RM_VOR, 0);
+            digitalWrite(RM_VOR,0);
+            softPwmWrite(RM_ZUR, 0);
+            digitalWrite(RM_ZUR,0);
         }
+        else{
+			//cout << "RM ZUR\n";
+            softPwmWrite(RM_ZUR, -pwrRM);
+		}
+
+        if(pwrLM > 0){
+			//cout << "LM VOR\n";
+            softPwmWrite(LM_VOR, pwrLM);
+		}
+        else if(pwrLM == 0)
+        {
+			//cout << "LM STOP\n";
+            softPwmWrite(LM_VOR, 0);
+            digitalWrite(LM_VOR,0);
+            softPwmWrite(LM_ZUR, 0);
+            digitalWrite(LM_ZUR,0);
+        }
+        else{
+			//cout << "LM ZUR\n";
+            softPwmWrite(LM_ZUR, -pwrLM);
+		}
     }
 }
 
-void lm_zur(int pwr, int time)
-{
-    if(time!=0) 	//zur Manuellen Steuerung
-    {
-        delay(50);					//Kurze Umschaltzeit
-        softPwmWrite(LM_ZUR,pwr);	//Erstellt eine PWM(Pulsweitenmodulation) fuer PIN=LM_ZUR und Wert=pwr
-        delay(time);				//Motor bleibt time ms an
-        delay(50);					//Kurze Umschaltzeit
-        softPwmWrite(LM_ZUR,0);		//Motor ist wieder aus.
-        digitalWrite(LM_ZUR,0);
-    }
-    else 		//automatische Steuerung durch Sensorwerte
-    {
-        delay(50);					//Kurze Umschaltzeit
-        softPwmWrite(LM_ZUR,pwr);	//Erstellt eine PWM(Pulsweitenmodulation) fuer PIN=LM_ZUR und Wert=pwr
-        if(pwr==0)
-        {
-            delay(50);					//Kurze Umschaltzeit
-            digitalWrite(LM_ZUR,0);		//Bei mir hat der Motor ohne diese Zeile nicht aufgehört zu drehen???
-        }
-    }
-}

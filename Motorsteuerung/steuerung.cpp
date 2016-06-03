@@ -84,6 +84,7 @@ void steuerung(int pwrRM, int pwrLM, int time)
         else
         {
             //cout << "RM ZUR\n";
+			//softPwmWrite(RM_ZUR, 0);
             softPwmWrite(RM_ZUR, -pwrRM);
             //delay(time);
             //softPwmWrite(RM_ZUR, 0);
@@ -110,6 +111,7 @@ void steuerung(int pwrRM, int pwrLM, int time)
         else
         {
             //cout << "LM ZUR\n";
+			//softPwmWrite(LM_ZUR, 0);
             softPwmWrite(LM_ZUR, -pwrLM);
             //delay(time);
             //softPwmWrite(LM_ZUR, 0);
@@ -148,6 +150,7 @@ void steuerung(int pwrRM, int pwrLM, int time)
         else
         {
             //cout << "RM ZUR\n";
+			//softPwmWrite(RM_ZUR, 0);
             softPwmWrite(RM_ZUR, -pwrRM);
         }
 
@@ -167,6 +170,7 @@ void steuerung(int pwrRM, int pwrLM, int time)
         else
         {
             //cout << "LM ZUR\n";
+			//softPwmWrite(LM_ZUR, 0);
             softPwmWrite(LM_ZUR, -pwrLM);
         }
     }

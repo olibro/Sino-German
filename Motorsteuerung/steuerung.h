@@ -23,11 +23,7 @@
 #define STEUERUNG_H
 
 	void init_motorsteuerung(void);	//initialisiert Pins
-	void rm_vor(int pwr, int time);
-	void rm_zur(int pwr, int time);
-	void lm_vor(int pwr, int time);
-	void lm_zur(int pwr, int time);
-	void steurung(int pwrRM, int pwrLM, int time);
+	void steuerung(int pwrRM, int pwrLM, int time);
 
 
 

@@ -63,12 +63,15 @@ void steuerung(int pwrRM, int pwrLM, int time)
 {
     if(time != 0)
     {
-        delay(50);
+        delay(100);
         // Rechter Motor
         if(pwrRM > 0)
         {
             //cout << "RM VOR\n";
             softPwmWrite(RM_VOR, pwrRM);
+            delay(100);
+            digitalWrite(RM_VOR, pwrRM);
+
             //delay(time);	FEHLER DA HIER PROGRAMM ANGEHALTEN WIRD FUER DELAY(TIME)
             //softPwmWrite(RM_VOR, 0);
             //digitalWrite(RM_VOR,0);
@@ -132,7 +135,7 @@ void steuerung(int pwrRM, int pwrLM, int time)
     }
     else  // (time == 0)
     {
-        delay(50);
+        delay(100);
 
         if(pwrRM > 0)
         {

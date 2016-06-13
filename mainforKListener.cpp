@@ -47,6 +47,8 @@ int main(int argc, char* argv[])
     // active true ist
     while(getDistance()>=8 && active)
     {
+        cin >> cSpeed >> cDirection;
+        cout << cSpeed << " <- -> " << cDirection;
         // Vorwärts
         if(cSpeed > 0)
         {
@@ -120,7 +122,7 @@ int main(int argc, char* argv[])
         delay(500);
         active = false;
         // Halte langsam an
-        steuerung(PRM, PLM, 1);
+        steuerung(0, 0, 0);
     }
     return 0;
 }

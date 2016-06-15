@@ -11,25 +11,38 @@ int main(int argc, char* argv[])
     while(abc == true)
     {
         c = getch();
-        cout << c << " <- wurde eingetippt";
+        cout << c << " <- wurde eingetippt" << endl;
 
         switch(c)
         {
+    case 'w':
+        case 'W':
+            cout << "wW wurde ged." << endl;
+            break;
+        case 's':
+        case 'S':
+            cout << "sS wurde ged." << endl;
+            break;
         case 'a':
-            cout << "a wurde ged." ;
-            break;
         case 'A':
-            cout << "a wurde ged." ;
+            cout << "aA wurde ged." << endl;
             break;
-        case 'd' || 'D':
-            cout << "D oder d wurde ged." ;
+        case 'd':
+        case 'D':
+            cout << "dD wurde ged." << endl;
+            break;
+        case 'b':
+            cout << "Leertaste wurde ged." << endl;
+            break;
+        case 'l':
+        case 'L':
+            cout << "lL wurde ged." << endl;
             break;
         case 'e':
+            cout << "e wurde ged." << endl;
             abc = false;
             break;
         }
     }
-
-
     return 0;
 }

@@ -59,7 +59,7 @@ void init_motorsteuerung(void)
 //				ist Zeit gleich Null fahren die Motoren solange bis ein anderes Kommando kommt.
 
 
-void steuerung(int pwrRM, int pwrLM, int time)
+void steuerungWT(int pwrRM, int pwrLM, int time)
 {
     if(time != 0)
     {
@@ -176,5 +176,21 @@ void steuerung(int pwrRM, int pwrLM, int time)
 			//softPwmWrite(LM_ZUR, 0);
             softPwmWrite(LM_ZUR, -pwrLM);
         }
+    }
+}
+
+void steuerung(int pwrRM, int pwrLM, int time)
+{
+    if(pwrRM >= 0){
+        softPwmWrite(RM_VOR, pwrRM);
+    }
+    else  {
+        softPwmWrite(RM_ZUR, -pwrRM);
+    }
+    if(pwrLM >= 0){
+        softPwmWrite(LM_VOR, pwrLM);
+    }
+    else  {
+        softPwmWrite(LM_ZUR, -pwrLM);
     }
 }

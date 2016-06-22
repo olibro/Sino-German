@@ -6,6 +6,7 @@
 
 #include "./USSensor/USSensor.h"
 #include "./Motorsteuerung/steuerung.h"
+#include "./IRSensor/ir.h"
 
 #define PMIN 60;
 #define MMIN -60;

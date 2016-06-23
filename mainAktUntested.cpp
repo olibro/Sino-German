@@ -23,10 +23,10 @@ void lineFollower();
 using namespace std;
 
 char c = '_';
-int a = 0;
 
 bool aktiv=true;
 bool follow = false;
+bool findLine = false;
 
 int PRM = 0;
 int PLM = 0;
@@ -53,8 +53,7 @@ const char *strCD = "Aktuelle Richtung = ";
 const char *strPRL = "Pwr RM = ";
 const char *strPLM = "Pwr LM = ";
 
-const char *strIRR = "IR Rechts -> ";
-const char *strIRL = " <- IR Links | ";
+
 
 void printElements()
 {
@@ -63,44 +62,38 @@ void printElements()
     mvprintw(1, 30, titel2);
 
     mvprintw(4, 2, strCS);
-    mvprintw(5, 2, strCD);
-
     mvprintw(4, 30, "%d ", counterSpeed);
-    mvprintw(5, 30, "%d ", counterDirection);
-
     mvprintw(4, 45, strPRL);
-    mvprintw(5, 45, strPLM);
-
     mvprintw(4, 55, "%d ", PRM);
+
+    mvprintw(5, 2, strCD);
+    mvprintw(5, 30, "%d ", counterDirection);
+    mvprintw(5, 45, strPLM);
     mvprintw(5, 55, "%d ", PLM);
 
     mvprintw(7, 2, strLE);
     mvprintw(7, 20, "%c ", c);
 
-    mvprintw(9, 33, strIRR);
-    mvprintw(9, 2, strIRL);
+    mvprintw(9, 2, "%d <- IR Links | IR Rechts -> %d", irL, irR);
 
-    mvprintw(9, 19, "%d ", irR);
-    mvprintw(9, 4, "%d ", irL);
-
-    mvprintw(11, 2, "follow = ");
-    mvprintw(11, 13, "%d", follow);
+    mvprintw(11, 2, "follow = %d", follow);
 
     mvprintw(20, 2, "'W' - SpeedUp");
     mvprintw(20, 27, "'S' - SpeedDown");
+    mvprintw(20, 55, "'B' - Bremsen");
+
     mvprintw(21, 2, "'D' - Rechts");
     mvprintw(21, 27, "'A' - Links");
-
-    mvprintw(20, 55, "'B' - Bremsen");
     mvprintw(21, 47, "'LEERTASTE' - PRM-PLM 100");
 
-    mvprintw(22, 2, "'E' - Beenden");
+    mvprintw(22, 2,  "'E' - Beenden");
+    mvprintw(22, 27, "'L' - LineFollow");
+    mvprintw(22, 55, "'O' - Einstellungen");
 
 }
 
 void calcCounterToPWR()
 {
-
 // Vorwärts
     if(counterSpeed >= 1)
     {
@@ -172,10 +165,7 @@ void start()
 {
     while(aktiv == true)
     {
-
         c = getch();
-        mvprintw(16, 2, "Schleife geht weiter mit %d", a);
-        a++;
 
         keyListener();
         if(counterDirection >= 4)
@@ -215,6 +205,7 @@ void keyListener()
         counterDirection++;
         break;
     case 'b':
+    case 'B':
         counterDirection = 0;
         counterSpeed = 0;
         softPwmWrite(21, 0);
@@ -238,8 +229,16 @@ void keyListener()
         //  -> start lineFollower
         break;
     case 'e':
+    case 'E':
         //    printw(" e wurde ged.");
         aktiv = false;
+        break;
+    case 'o':
+    case 'O':
+        // Optionen wie Abbruch bei Distance
+        // MIN Speed
+        // Lenkungs Optionen
+        // ...
         break;
     }
 }
@@ -276,20 +275,20 @@ void updateIR()
     irL = digitalRead(IRL);
 }
 
+void printLineFollowElements()
+{
+    mvprintw(12, 2, "findLine = %d", findLine);
+    mvprintw(13, 2, "Distance = %d", getDistance());
+}
+
 // Linienverfolgung, fährt gerade aus, bis eine Linie entdeckt wurde
 void lineFollower()
 {
-
     updateIR();
-    bool findLine = false;
+    printLineFollowElements();
 
     while(follow == true && getDistance() >= 20 )
     {
-        mvprintw(12, 2, "findLine = %d", findLine);
-        mvprintw(13, 2, "Distance = %d", getDistance());
-
-
-
         // Fahre bis eine linie entdeckt wird
         while(findLine == false)
         {
@@ -328,6 +327,11 @@ void lineFollower()
         updateIR();
     }
     follow = !follow;
+    findLine = false;
+
+    // Löscht nicht mehr benötigte elemente von der GUI
+    mvprintw(13, 2, "               ");
+    mvprintw(12, 2, "               ");
 }
 
 int main(int argc, char* argv[])

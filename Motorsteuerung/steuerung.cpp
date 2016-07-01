@@ -1,4 +1,11 @@
-//Compile: g++ -Wall -pedantic main.cpp steuerung.cpp -o steuerung -lwiringPi -lpthread
+/***************************************************
+	In diesem Modul steuerung.cpp wird die Funktion
+	steuerung(int pwrRM, int pwrLM, int time)festgelegt, 
+	mit der die Motoren gesteurt werden. Außerdem
+	gibt es noch eine Initialisierungsfunktion
+	init_motorsteuerung() definiert, die die Pins für
+	die Motoren konfiguriert.
+***************************************************/
 
 #include <iostream>
 #include <wiringPi.h>
@@ -10,12 +17,6 @@ using namespace std;
 // Benutze Pinkonfiguration von wiringPi, wiringPiSetup()
 // VOR==Vorwaertsfahren, ZUR==Rueckwaertsfahren
 // LM==Linker Motor, RM==Rechter Motor
-
-// 			wiringPiPin		Physicalpin
-#define LM_VOR	21	// 			29
-#define	LM_ZUR	22	//			31
-#define RM_VOR	23	//			33
-#define RM_ZUR	24	//			35
 
 
 void init_motorsteuerung(void)
@@ -61,116 +62,72 @@ void init_motorsteuerung(void)
 
 void steuerung(int pwrRM, int pwrLM, int time)
 {
-    if(time != 0)
+    if(time != 0)	//Fährt eine gewisse Zeit t vorwärts/rückwarts
     {
-        delay(50);
-        // Rechter Motor
-        if(pwrRM > 0)
+        // Rechter Motor vorwärts
+        if(pwrRM > 0) 
         {
-            //cout << "RM VOR\n";
             softPwmWrite(RM_VOR, pwrRM);
-            //delay(time);	FEHLER DA HIER PROGRAMM ANGEHALTEN WIRD FUER DELAY(TIME)
-            //softPwmWrite(RM_VOR, 0);
-            //digitalWrite(RM_VOR,0);
         }
-        else if(pwrRM == 0)
+        else if(pwrRM == 0) //Stop
         {
-            //cout << "RM STOP\n";
             softPwmWrite(RM_VOR, 0);
             softPwmWrite(RM_ZUR, 0);
-            digitalWrite(RM_VOR,0);
-            digitalWrite(RM_ZUR,0);
         }
-        else
+        else	//RM rückwärts
         {
-            //cout << "RM ZUR\n";
-			//softPwmWrite(RM_ZUR, 0);
             softPwmWrite(RM_ZUR, -pwrRM);
-            //delay(time);
-            //softPwmWrite(RM_ZUR, 0);
-            //digitalWrite(RM_ZUR,0);
         }
 
-        // Linker Motor
+        // Linker Motor vorwärts
         if(pwrLM > 0)
         {
-            //cout << "LM VOR\n";
             softPwmWrite(LM_VOR, pwrLM);
-            //delay(time);
-            //softPwmWrite(LM_VOR, 0);
-            //digitalWrite(LM_VOR,0);
         }
-        else if(pwrLM == 0)
+        else if(pwrLM == 0) //LM stop
         {
-            //cout << "LM STOP\n";
             softPwmWrite(LM_VOR, 0);
-            digitalWrite(LM_VOR,0);
             softPwmWrite(LM_ZUR, 0);
-            digitalWrite(LM_ZUR,0);
         }
-        else
+        else //LM rückwärts
         {
-            //cout << "LM ZUR\n";
-			//softPwmWrite(LM_ZUR, 0);
             softPwmWrite(LM_ZUR, -pwrLM);
-            //delay(time);
-            //softPwmWrite(LM_ZUR, 0);
-            //digitalWrite(LM_ZUR,0);
         }
-        //Nachdem der Motor an war soll er nach ablauf der Zeit wieder ausgehen.
+        //Nachdem die Motoren an waren sollen sie nach Ablauf der Zeit t wieder ausgehen.
         delay(time);
         softPwmWrite(RM_VOR, 0);
-        digitalWrite(RM_VOR,0);
         softPwmWrite(RM_ZUR, 0);
-        digitalWrite(RM_ZUR,0);
         softPwmWrite(LM_VOR, 0);
-        digitalWrite(LM_VOR,0);
         softPwmWrite(LM_ZUR, 0);
-        digitalWrite(LM_ZUR,0);
-
-
     }
     else  // (time == 0)
+	//Motoren laufen solange wie kein anderes Kommando gesendet wird
     {
-        delay(50);
-
-        if(pwrRM > 0)
+        if(pwrRM > 0)	//RM vorwärts
         {
-            //cout << "RM VOR\n";
             softPwmWrite(RM_VOR, pwrRM);
         }
-        else if(pwrRM == 0)
+        else if(pwrRM == 0)	//RM stop
         {
-            //cout << "RM STOP\n";
             softPwmWrite(RM_VOR, 0);
-            digitalWrite(RM_VOR,0);
             softPwmWrite(RM_ZUR, 0);
-            digitalWrite(RM_ZUR,0);
         }
-        else
+        else	//RM rückwarts
         {
-            //cout << "RM ZUR\n";
-			//softPwmWrite(RM_ZUR, 0);
             softPwmWrite(RM_ZUR, -pwrRM);
         }
 
-        if(pwrLM > 0)
+        if(pwrLM > 0)	//LM vorwärts
         {
-            //cout << "LM VOR\n";
             softPwmWrite(LM_VOR, pwrLM);
         }
-        else if(pwrLM == 0)
+        else if(pwrLM == 0)	//LM stop
         {
-            //cout << "LM STOP\n";
             softPwmWrite(LM_VOR, 0);
-            digitalWrite(LM_VOR,0);
             softPwmWrite(LM_ZUR, 0);
-            digitalWrite(LM_ZUR,0);
         }
-        else
+        else	//LM rückwarts
         {
-            //cout << "LM ZUR\n";
-			//softPwmWrite(LM_ZUR, 0);
             softPwmWrite(LM_ZUR, -pwrLM);
         }
     }

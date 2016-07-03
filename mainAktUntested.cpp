@@ -18,6 +18,7 @@ void dynamischRechts();
 void dynamischLinks();
 void beschleunigen();
 void updateIR();
+printLineFollowElements();
 void lineFollower();
 
 using namespace std;

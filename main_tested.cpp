@@ -1,3 +1,6 @@
+// g++ -Wall -pedantic main_tested.cpp ./USSensor/USSensor.cpp ./Motorsteuerung/steuerung.cpp ./IRSensor/ir.cpp -o main -lwiringPi -lncurses -lpthread
+
+
 #include <iostream>
 #include <sstream>
 #include <ncurses.h>
@@ -10,7 +13,7 @@
 
 #define PMIN 40
 #define MMIN -40
-#define PWR_A 35
+#define PWR_A 30
 void lineFollower();
 using namespace std;
 
@@ -193,14 +196,23 @@ void start()
             //   refresh();
             break;
         case 'b':
-            //    printw( "b wurde ged.");
-            //   refresh();
+        case 'B':
+            counterDirection = 0;
+            counterSpeed = 0;
+            softPwmWrite(21, 0);
+            softPwmWrite(22, 0);
+            softPwmWrite(23, 0);
+            softPwmWrite(24, 0);
             break;
         case 'l':
         case 'L':
             // Toggle: true = false <-> false == true;
             follow = !follow;
-            lineFollower();
+           // do
+           // {
+                lineFollower();
+           // }
+           // while(getch() != 'q' || getch() != 'Q');
             //  -> start lineFollower
 
             break;
@@ -210,17 +222,26 @@ void start()
             abc = false;
             break;
         }
-        if(counterDirection >= 7)
-            counterDirection = 7;
-        if(counterDirection <= -7)
-            counterDirection = -7;
-        if(counterSpeed >= 7)
-            counterSpeed = 7;
-        if(counterSpeed <= -7)
-            counterSpeed = -7;
+
+
+        if(counterDirection >= 6)
+            counterDirection = 6;
+        if(counterDirection <= -6)
+            counterDirection = -6;
+        if(counterSpeed >= 6)
+            counterSpeed = 6;
+        if(counterSpeed <= -6)
+            counterSpeed = -6;
 
         calcCounterToPWR();
-        steuerung(PRM, PLM, t);
+
+        if(counterDirection == -1 && counterSpeed == 0)
+            steuerung(50, -50, t);
+        else if (counterDirection == 1 && counterSpeed == 0)
+            steuerung(-50, 50, t);
+
+        else
+            steuerung(PRM, PLM, t);
 
         printElements();
     }
@@ -240,10 +261,11 @@ void lineFollower()
     updateIR();
     bool findLine = false;
 
-    while(getDistance()>10)
+    while(getDistance() > 10)
     {
         mvprintw(12, 2, "findLine = ");
         mvprintw(12, 13, "%d", findLine);
+        mvprintw(13, 2, "GetDistance = %d       ", getDistance());
 
         // Fahre bis eine linie entdeckt wird
         /* while(findLine == false)
@@ -258,7 +280,7 @@ void lineFollower()
         // stop
         if(irL == LOW && irR == LOW)
         {
-			steuerung(0,0,0);
+            steuerung(0,0,0);
         }
         // Links
         if(irL == LOW && irR == HIGH)
@@ -277,6 +299,11 @@ void lineFollower()
         }
         updateIR();
     }
+    counterDirection = 0;
+    counterSpeed = 0;
+    steuerung(0,0,0);
+
+
 }
 
 int main(int argc, char* argv[])

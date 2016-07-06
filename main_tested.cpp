@@ -1,3 +1,6 @@
+// g++ -Wall -pedantic main_tested.cpp ./USSensor/USSensor.cpp ./Motorsteuerung/steuerung.cpp ./IRSensor/ir.cpp -o main -lwiringPi -lncurses -lpthread
+
+
 #include <iostream>
 #include <sstream>
 #include <ncurses.h>
@@ -193,14 +196,23 @@ void start()
             //   refresh();
             break;
         case 'b':
-            //    printw( "b wurde ged.");
-            //   refresh();
+        case 'B':
+            counterDirection = 0;
+            counterSpeed = 0;
+            softPwmWrite(21, 0);
+            softPwmWrite(22, 0);
+            softPwmWrite(23, 0);
+            softPwmWrite(24, 0);
             break;
         case 'l':
         case 'L':
             // Toggle: true = false <-> false == true;
             follow = !follow;
-            lineFollower();
+            do
+            {
+                lineFollower();
+            }
+            while(getch() != 'q' || getch() != 'Q');
             //  -> start lineFollower
 
             break;
@@ -210,6 +222,8 @@ void start()
             abc = false;
             break;
         }
+
+
         if(counterDirection >= 7)
             counterDirection = 7;
         if(counterDirection <= -7)
@@ -258,7 +272,7 @@ void lineFollower()
         // stop
         if(irL == LOW && irR == LOW)
         {
-			steuerung(0,0,0);
+            steuerung(0,0,0);
         }
         // Links
         if(irL == LOW && irR == HIGH)

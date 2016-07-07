@@ -7,14 +7,32 @@
 #include <wiringPi.h>
 #include <softPwm.h>
 
+//Headerfiles
 #include "./USSensor/USSensor.h"
 #include "./Motorsteuerung/steuerung.h"
 #include "./IRSensor/ir.h"
 
+
+/*******************************************************
+	Diese Werte müssen individuell angepasst werden,
+	da beide Autos nicht baugleich sind. (Verschiedene
+	Motoren)
+*******************************************************/
+// Leistung==Geschwindigkeit
+// PMIN: Minimalleistung in Prozent für Vorwärtsfahren
+// MMIN: Minimalleistung in Prozent für Rückwärtsfahren
+// PWR_A: Leistung in Prozent im Automatikmodus
 #define PMIN 40
 #define MMIN -40
-#define PWR_A 30
+#define PWR_A 32
+
+//Prototypendeklaration
 void lineFollower();
+void printElements();
+void calcCounterToPWR();
+void start();
+void updateIR();
+
 using namespace std;
 
 char c = '_';
@@ -29,12 +47,15 @@ int t = 0;
 int pmin = PMIN;
 int mmin = MMIN;
 
+//counterSpeed: Aktuelle Geschwindigkeit
+//counterDirection: Aktuelle "Kurvengeschwindigkeit"
 int counterDirection = 0;
 int counterSpeed = 0;
 
 int irR = digitalRead(IRR);
 int irL = digitalRead(IRL);
 
+//Strings um Oberfläche zu erstellen
 const char *strC = "LEER";
 const char *titel = "SINO SmartSensor Car";
 const char *titel2 = "Trible S-Car";
@@ -50,6 +71,7 @@ const char *strPLM = "Pwr LM = ";
 const char *strIRR = "IR Rechts -> ";
 const char *strIRL = " <- IR Links | ";
 
+//Ausgabe der Oberfläche
 void printElements()
 {
     refresh();
@@ -92,6 +114,9 @@ void printElements()
 
 }
 
+//Hier wird counterDirection und counterSpeed in die momentane Leistung umgerechnet.
+//Bei druecken einer Taste (W,A,S,D) wird der zugeordnete Zaehler um eins erhöht.
+// --> Siehe start()-Funktion
 void calcCounterToPWR()
 {
 
@@ -162,40 +187,41 @@ void calcCounterToPWR()
     }
 }
 
+//Manueller Modus
 void start()
 {
-    while(abc == true)
+    while(abc == true)	//In switch('e') kann bei druecken von 'e' abc auf false gesetzt werden -> Abbruch
     {
         c = getch();
 
 
         switch(c)
         {
-        case 'w':
+        case 'w':	//Vorwärts
         case 'W':
             counterSpeed++;
             //   str2 = "die Taste W oder w wurde gedrückt";
             //    refresh();
             break;
-        case 's':
+        case 's':	//Zurück
         case 'S':
             counterSpeed--;
             //    printw(" sS wurde ged.");
             //     refresh();
             break;
-        case 'a':
+        case 'a':	//Links
         case 'A':
             counterDirection--;
             //     printw(" aA wurde ged.");
             //    refresh();
             break;
-        case 'd':
+        case 'd':	//Rechts
         case 'D':
             counterDirection++;
             //    printw(" dD wurde ged.");
             //   refresh();
             break;
-        case 'b':
+        case 'b':	//Anhalten
         case 'B':
             counterDirection = 0;
             counterSpeed = 0;
@@ -204,7 +230,7 @@ void start()
             softPwmWrite(23, 0);
             softPwmWrite(24, 0);
             break;
-        case 'l':
+        case 'l':	//Automatikmodus
         case 'L':
             // Toggle: true = false <-> false == true;
             follow = !follow;
@@ -216,14 +242,14 @@ void start()
             //  -> start lineFollower
 
             break;
-        case 'e':
+        case 'e':	//Programm beenden
 
             //    printw(" e wurde ged.");
             abc = false;
             break;
         }
 
-
+		//Maximalleistung von 100 Prozent wird hier begrenzt
         if(counterDirection >= 6)
             counterDirection = 6;
         if(counterDirection <= -6)
@@ -234,11 +260,12 @@ void start()
             counterSpeed = -6;
 
         calcCounterToPWR();
-
+		
+		//Bei Einfachdruck auf Links oder Rechtstaste dreht sich das Auto auf der Stelle
         if(counterDirection == -1 && counterSpeed == 0)
-            steuerung(50, -50, t);
+            steuerung(42, -42, t);
         else if (counterDirection == 1 && counterSpeed == 0)
-            steuerung(-50, 50, t);
+            steuerung(-42, 42, t);
 
         else
             steuerung(PRM, PLM, t);

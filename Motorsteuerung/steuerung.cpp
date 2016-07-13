@@ -18,7 +18,18 @@ using namespace std;
 // VOR==Vorwaertsfahren, ZUR==Rueckwaertsfahren
 // LM==Linker Motor, RM==Rechter Motor
 
-
+///Initialisierung der GPIO Pins zur Motorsteuerung
+/**
+	/param LM_VOR	Linker Motor vorwärts
+	/param LM_ZUR	Linker Motor rückwärts
+	/param RM_VOR	Rechter Motor vorwärts
+	/param RM_ZUR	Rechter Motor rückwärts
+	
+	Hier werden die benötigten GPIO Pins  als PWM Output initialisiert.
+	Hierzu wird mithilfe der wiringPi Bibliothek per Software an jedem Pin
+	ein PWM Sinal erzeugt. Die Spannweite des Signals reicht von 0 bis 100 
+	und entspricht somit 0 bis 100% Leistung.
+*/
 void init_motorsteuerung(void)
 {
     pinMode(LM_VOR,OUTPUT);
@@ -59,7 +70,20 @@ void init_motorsteuerung(void)
 //int time: 	wenn Zeit ungleich Null, dann fahren beide Motoren so lange Zeitangabe war.
 //				ist Zeit gleich Null fahren die Motoren solange bis ein anderes Kommando kommt.
 
-
+///Steuerung der Motoren
+/**
+	/param pwrRM	Übergabe der Leistung des rechten Motors in Prozent
+	/param pwrLM	Übergabe der Leistung des linken Motors in Prozent
+	/param time		Zeit, wie lange die Motoren laufen sollen. time=0 -> Motoren laufen "unendlich" lange
+	
+	In dieser Funktion gibt es zwei Modi: 
+		- Die Motoren laufen eine bestimmte Zeit
+		- Die Motoren laufen endlos
+	pwrRM und pwrLM müssen! Werte zwischen -100 und 100 in 1er Schritten annehmen
+	Eine negative Zahl entspricht dann dem Rückwärtsfahren. Positiv dem Vorwärtsfahren.
+	Jenachdem welche Größe pwrRM und pwrLM und time haben wird ein anderes Kommando ausgeführt.
+	In jedem Fall wird an den GPIO Pins der Motoren ein PWM Signal erzeugt, das dann der Leistung entspricht.
+*/
 void steuerung(int pwrRM, int pwrLM, int time)
 {
     if(time != 0)	//Fährt eine gewisse Zeit t vorwärts/rückwarts
